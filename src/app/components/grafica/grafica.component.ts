@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { WebsocketService } from '../../services/websocket.service';
 
 @Component({
   selector: 'app-grafica',
@@ -13,7 +14,7 @@ export class GraficaComponent implements OnInit {
   ];
   public lineChartLabels: Array<any> = ['enero', 'febrero', 'marzo', 'abril'];
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, public wsService: WebsocketService) { }
 
   ngOnInit() {
     // metodo para probar que la importacion de las graficas funciona
@@ -29,11 +30,19 @@ export class GraficaComponent implements OnInit {
       ];
     }, 3000); */
     this.getData();
+    this.escucharSocket();
   }
 
   getData() {
     this.http.get('http://localhost:5000/grafica').subscribe((data: any) => {
       console.log(data);
+      this.lineChartData = data;
+    });
+  }
+
+  escucharSocket() {
+    this.wsService.listen('cambio-grafica').subscribe((data: any) => {
+      console.log('socket', data);
       this.lineChartData = data;
     });
   }
