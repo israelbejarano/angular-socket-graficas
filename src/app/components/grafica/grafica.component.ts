@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-grafica',
@@ -8,14 +9,15 @@ import { Component, OnInit } from '@angular/core';
 export class GraficaComponent implements OnInit {
 
   public lineChartData: Array<any> = [
-    { data: [65, 59, 80, 81], label: 'Ventas' }
+    { data: [0, 0, 0, 0], label: 'Ventas' }
   ];
   public lineChartLabels: Array<any> = ['enero', 'febrero', 'marzo', 'abril'];
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   ngOnInit() {
-    setInterval(() => {
+    // metodo para probar que la importacion de las graficas funciona
+    /* setInterval(() => {
       const newData = [
         Math.round(Math.random() * 100),
         Math.round(Math.random() * 100),
@@ -25,7 +27,15 @@ export class GraficaComponent implements OnInit {
       this.lineChartData = [
         {data: newData, label: 'Ventas'}
       ];
-    }, 3000);
+    }, 3000); */
+    this.getData();
+  }
+
+  getData() {
+    this.http.get('http://localhost:5000/grafica').subscribe((data: any) => {
+      console.log(data);
+      this.lineChartData = data;
+    });
   }
 
 }
